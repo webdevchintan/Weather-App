@@ -9,13 +9,28 @@ import { getWeatherIcon } from '../utils/helper';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import WeatherItem from '../components/WeatherItem';
 import { getWeatherAPI } from '../service';
+// import * as Location from 'expo-location';
+
 
 export default Home = () => {
   const [loading, setLoading] = useState(true);
   const [weatherData, setWeatherData] = useState(null);
 
+
   useEffect(() => {
     getWeatherData();
+  }, []);
+  useEffect(() => {
+    // (async () => {
+      
+    //   let { status } = await Location.requestForegroundPermissionsAsync();
+    //   if (status !== 'granted') {
+    //     setErrorMsg('Permission to access location was denied');
+    //     return;
+    //   }
+    //   let location = await Location.getCurrentPositionAsync({});
+    //   setLocation(location);
+    // })();
   }, []);
 
   // api call for weather
