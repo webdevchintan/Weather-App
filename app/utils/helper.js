@@ -1,0 +1,1 @@
+export const getWeatherIcon = (iconName) => `https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/PNG/1st%20Set%20-%20Color/${iconName}.png`;
