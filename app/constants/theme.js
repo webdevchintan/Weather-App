@@ -1,4 +1,6 @@
-export const fontFamily  = 'sans-serif';
+import { Platform } from "react-native";
+
+export const fontFamily  = Platform.OS === 'android' ? 'Roboto' : 'Futura';
 export const fontStyle = {
     font_48:{
         fontSize:48, 

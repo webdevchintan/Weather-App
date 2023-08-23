@@ -8,36 +8,46 @@ import { colors } from '../constants/colors';
 import { getWeatherIcon } from '../utils/helper';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import WeatherItem from '../components/WeatherItem';
-import { getWeatherAPI } from '../service';
-// import * as Location from 'expo-location';
+import { getAddressFromLatLong, getWeatherAPI } from '../service';
+import * as Location from 'expo-location';
 
 
 export default Home = () => {
   const [loading, setLoading] = useState(true);
   const [weatherData, setWeatherData] = useState(null);
 
+  useEffect(() => {
+    checkLocationPemission();
+  }, []);
+  
 
-  useEffect(() => {
-    getWeatherData();
-  }, []);
-  useEffect(() => {
-    // (async () => {
-      
-    //   let { status } = await Location.requestForegroundPermissionsAsync();
-    //   if (status !== 'granted') {
-    //     setErrorMsg('Permission to access location was denied');
-    //     return;
-    //   }
-    //   let location = await Location.getCurrentPositionAsync({});
-    //   setLocation(location);
-    // })();
-  }, []);
+  // check location permission and fetch address from reverse geolocation
+  const checkLocationPemission = async() => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access location was denied');
+        return;
+      }
+        const location = await Location.getCurrentPositionAsync({
+          maximumAge: 60000, // only for Android
+          accuracy: Location.Accuracy.High, 
+      })
+        // reverse geolocation based on Lat Long
+        const address = await getAddressFromLatLong({lat : location?.coords?.latitude, long:location?.coords?.longitude})
+      if(address !== ''){ // if address exist then show weather data else showing mock location
+        getWeatherData(address); 
+      } else {
+        getWeatherData('Calicut,Kerala'); 
+      }
+  }
+
+  
 
   // api call for weather
-  const getWeatherData = async () => {
+  const getWeatherData = async (location) => {
     setLoading(true);
     try {
-      const data = await getWeatherAPI();
+      const data = await getWeatherAPI(location);
       setWeatherData(data);
       setLoading(false);
     } catch (error) {
@@ -123,7 +133,7 @@ const styles = StyleSheet.create({
   },
   weeklyContainer: {
     backgroundColor: colors.lightGrey,
-    height: 420,
+    height: '52%',
     // flexGrow:1,
     borderRadius: 25,
     paddingVertical: 15,
